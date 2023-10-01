@@ -1,0 +1,13 @@
+body {
+    background: #2e2e2e;
+    text-align: center;
+}
+
+p {
+    color: orange;
+}
+
+button {
+    background-color: beige;
+    border: orange;
+}
