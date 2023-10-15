@@ -4,10 +4,12 @@ let blocksPerSecond = 1;
 let tickInterval = 100;
 let prestige = 0;
 let prestigePoints = 0;
+let autoBlocksPerSecond = 0;
+let autoBlockValuePerSecond = 0;
 
 function update() {
     const moneyDisplay = document.getElementById("money");
-    moneyDisplay.textContent = `$${money.toFixed(2)}\r\nBlocks/Second ${blocksPerSecond}\r\n$/Block ${moneyPerBlock * getMoneyMulti()}\r\n$/Second ${blocksPerSecond * (moneyPerBlock * getMoneyMulti())}\r\nPrestige ${prestige}\r\nPrestige Points ${prestigePoints}`;
+    moneyDisplay.textContent = `$${money.toFixed(2)}\r\nBlocks/Second ${blocksPerSecond.toFixed(1)}\r\n$/Block ${(moneyPerBlock * getMoneyMulti()).toFixed(1)}\r\n$/Second ${(blocksPerSecond * (moneyPerBlock * getMoneyMulti())).toFixed(0)}\r\nPrestige ${prestige}\r\nPrestige Points ${prestigePoints}`;
 
     const prestigeButton = document.getElementById("prestigeButton");
     prestigeButton.textContent = `Prestige for ${prestige+2} times money\r\nCost: ${(prestige+1)*100}`;
@@ -30,15 +32,23 @@ function changeTab(event, tabName) {
 }
 
 function handleAutoBlocksPerSecond() {
+    if (prestigePoints >= 1) {
+        autoBlocksPerSecond+=.1;
+        prestigePoints--;
+    }
 }
 
 function handleAutoBlockValue() {
-
+    if (prestigePoints >= 1) {
+        autoBlockValuePerSecond+=.1;
+        prestigePoints--;
+    }
 }
 
 function handlePrestige() {
     if (money >= (prestige+1)*100) {
         prestige++;
+        prestigePoints++;
         resetBasic();
     }
 }
@@ -72,6 +82,7 @@ function handleAutoUpgrade() {
 function resetAll() {
     resetBasic();
     prestige = 0;
+    prestigePoints = 0;
 }
 
 function resetBasic() {
@@ -82,8 +93,14 @@ function resetBasic() {
 
 function backgroundLoop() {
     setInterval(function () {
-        increaseMoney(moneyPerBlock * (blocksPerSecond / (1000 / tickInterval)));
+        calcPerTick();
     }, tickInterval);
+}
+
+function calcPerTick() {
+    moneyPerBlock+=autoBlockValuePerSecond;
+    blocksPerSecond+=autoBlocksPerSecond;
+    increaseMoney(moneyPerBlock * (blocksPerSecond / (1000 / tickInterval)));
 }
 
 function load() {
@@ -95,12 +112,24 @@ function load() {
         blocksPerSecond = parseInt(localStorage.getItem('moneyPerSecond'));
     }
 
-    if (localStorage.getItem('moneyPerClick')) {
-        moneyPerBlock = parseInt(localStorage.getItem('moneyPerClick'));
+    if (localStorage.getItem('moneyPerBlock')) {
+        moneyPerBlock = parseFloat(localStorage.getItem('moneyPerBlock'));
     }
 
     if (localStorage.getItem('prestige')) {
         prestige = parseInt(localStorage.getItem('prestige'));
+    }
+
+    if (localStorage.getItem('prestigePoints')) {
+        prestigePoints = parseInt(localStorage.getItem('prestigePoints'));
+    }
+
+    if (localStorage.getItem('autoBlocksPerSecond')) {
+        autoBlocksPerSecond = parseFloat(localStorage.getItem('autoBlocksPerSecond'));
+    }
+
+    if (localStorage.getItem('autoBlockValuePerSecond')) {
+        autoBlockValuePerSecond = parseFloat(localStorage.getItem('autoBlockValuePerSecond'));
     }
 
     calculateOfflineGain();
@@ -110,19 +139,25 @@ function save() {
     localStorage.setItem('money', money);
     localStorage.setItem('blocksPerSecond', blocksPerSecond);
     localStorage.setItem('moneyPerBlock', moneyPerBlock);
-    localStorage.setItem('prestige', prestige.toString());
+    localStorage.setItem('prestige', prestige);
+    localStorage.setItem('prestigePoints', prestigePoints);
+    localStorage.setItem('autoBlocksPerSecond', autoBlocksPerSecond);
+    localStorage.setItem('autoBlockValuePerSecond', autoBlockValuePerSecond);
 
-    localStorage.setItem('last_save', Date.now().toString());
+    localStorage.setItem('last_save', Date.now());
 }
 
 function calculateOfflineGain() {
     if (localStorage.getItem('last_save')) {
         let last_save = localStorage.getItem('last_save');
         let time_elapsed = Date.now() - last_save;
-        let blocksPerMS = (blocksPerSecond / 1000) * time_elapsed;
-        let gains = blocksPerMS * moneyPerBlock;
-        increaseMoney(gains);
-        alert("You have made $" + gains + " offline");
+        let currentMoney = money;
+        for (let i = time_elapsed; i > 0; i-=100) {
+            calcPerTick();
+        }
+
+        let gain = money - currentMoney;
+        alert("You have made $" + gain + " offline");
     }
 }
 
