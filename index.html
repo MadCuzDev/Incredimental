@@ -1,25 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Incredimental</title>
-        <link rel="stylesheet" type="text/css" href="main.css">
-    </head>
-<body>
-    <h1>Incredimental</h1>
-    <p id="score">Score: 0</p>
-
-    <button id="clickButton">ooga your booga!</button>
-
-    <button id="upgradeClickButton">ooga your booga EVEN BETTER!<br>10 SCORE</button>
-
-    <button id="upgradeAutoButton">ooga your booga BUT AUTOMATICALLY!<br>10 SCORE</button>
-
-    <br>
-
-    <button id="resetButton">shit broke!</button>
-
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Incredimental</title>
+    <link href="main.css" rel="stylesheet" type="text/css">
     <script src="main.js"></script>
+</head>
+
+<body>
+<h1>Incredimental</h1>
+
+<div class="tabs">
+    <button class="tab-button" id="defaultTab" onclick="changeTab(event, 'main')">Main</button>
+    <button class="tab-button" onclick="changeTab(event, 'settings')">Settings</button>
+</div>
+
+<p id="money">$0</p>
+
+<div class="tab" id="main">
+    <button id="clickButton" onclick="handleClick()">gain money!</button>
+
+    <button id="upgradeClickButton" onclick="handleClickUpgrade()">increase $/click by 1<br>$10</button>
+
+    <button id="upgradeAutoButton" onclick="handleAutoUpgrade()">increase $/second by 1<br>$10</button>
+</div>
+
+<div class="tab" id="settings">
+    <button id="resetButton" onclick="reset()">reset game</button>
+</div>
+
 </body>
 </html>

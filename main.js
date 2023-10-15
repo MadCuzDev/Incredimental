@@ -1,72 +1,79 @@
-let score = 0;
-let scorePerClick = 1;
-let scorePerSecond = 0;
+let money = 0;
+let moneyPerClick = 1;
+let moneyPerSecond = 0;
 let tickInterval = 100;
 
-const scoreDisplay = document.getElementById('score');
-const clickButton = document.getElementById('clickButton');
-const upgradeClickButton = document.getElementById('upgradeClickButton');
-const resetButton = document.getElementById('resetButton');
-const upgradeAutoButton = document.getElementById('upgradeAutoButton');
-
-
 function update() {
-    scoreDisplay.textContent = `$${score.toFixed(2)}\n$/Second ${scorePerSecond}`;
+    const moneyDisplay = document.getElementById("money");
+    moneyDisplay.textContent = `$${money.toFixed(2)}\n$/Second ${moneyPerSecond}`;
 
     requestAnimationFrame(update);
 }
 
+function changeTab(event, tabName) {
+    let i, tabs, buttons;
+    tabs = document.getElementsByClassName("tab");
+    for (i = 0; i < tabs.length; i++) {
+        tabs[i].style.display = "none";
+    }
+    buttons = document.getElementsByClassName("tab-button");
+    for (i = 0; i < buttons.length; i++) {
+        buttons[i].className = buttons[i].className.replace(" active", "");
+    }
+    document.getElementById(tabName).style.display = "block";
+    event.currentTarget.className += " active";
+}
+
 function handleClick() {
-    score += scorePerClick;
+    money += moneyPerClick;
 }
 
 function handleClickUpgrade() {
-    if (score>=10){
-        score-=10;
-        scorePerClick+=1;
+    if (money >= 10) {
+        money -= 10;
+        moneyPerClick += 1;
     }
 }
 
 function handleAutoUpgrade() {
-    if (score>=10){
-        score-=10;
-        scorePerSecond+=1;
+    if (money >= 10) {
+        money -= 10;
+        moneyPerSecond += 1;
     }
 }
 
 function reset() {
-    score = 0;
-    scorePerClick = 1;
-    scorePerSecond = 0;
+    money = 0;
+    moneyPerClick = 1;
+    moneyPerSecond = 0;
 }
 
 function backgroundLoop() {
     setInterval(function () {
-        score+=scorePerSecond/(1000/tickInterval);
-    }, tickInterval)
+        money += moneyPerSecond / (1000 / tickInterval);
+    }, tickInterval);
 }
 
 function load() {
     if (localStorage.getItem('money')) {
-        score = parseInt(localStorage.getItem('money'));
+        money = parseInt(localStorage.getItem('money'));
     }
 
     if (localStorage.getItem('moneyPerSecond')) {
-        scorePerSecond = parseInt(localStorage.getItem('moneyPerSecond'));
+        moneyPerSecond = parseInt(localStorage.getItem('moneyPerSecond'));
     }
 
     if (localStorage.getItem('moneyPerClick')) {
-        scorePerClick = parseInt(localStorage.getItem('moneyPerClick'));
+        moneyPerClick = parseInt(localStorage.getItem('moneyPerClick'));
     }
 
     calculateOfflineGain();
 }
 
 function save() {
-    localStorage.setItem('money', score);
-    localStorage.setItem('moneyPerSecond', scorePerSecond);
-    localStorage.setItem('moneyPerClick', scorePerClick);
-
+    localStorage.setItem('money', money);
+    localStorage.setItem('moneyPerSecond', moneyPerSecond);
+    localStorage.setItem('moneyPerClick', moneyPerClick);
 
     localStorage.setItem('last_save', Date.now());
 }
@@ -75,29 +82,20 @@ function calculateOfflineGain() {
     if (localStorage.getItem('last_save')) {
         let last_save = localStorage.getItem('last_save');
         let time_elapsed = Date.now() - last_save;
-        let gains = (scorePerSecond/1000) * time_elapsed;
-        score+=gains;
-        alert("You have made $" + gains + " offline")
+        let gains = (moneyPerSecond / 1000) * time_elapsed;
+        money += gains;
+        alert("You have made $" + gains + " offline");
     }
 }
 
-// Button Listeners
-clickButton.addEventListener('click', handleClick);
-upgradeClickButton.addEventListener('click', handleClickUpgrade);
-resetButton.addEventListener('click', reset);
-upgradeAutoButton.addEventListener('click', handleAutoUpgrade);
-
-
-// Game Loop initialization
-update();
-
-// Save/Load system for score
-window.onbeforeunload = function(event){
+// Save/Load system for money
+window.onbeforeunload = function (event) {
     save();
 }
 
-window.onload = function (){
+document.addEventListener("DOMContentLoaded", function () {
     load();
-
     backgroundLoop();
-}
+    update();
+    document.getElementById("defaultTab").click();
+});

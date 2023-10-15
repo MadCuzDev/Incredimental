@@ -11,3 +11,7 @@ button {
     background-color: beige;
     border: orange;
 }
+
+.tab {
+    display: none;
+}
