@@ -13,21 +13,30 @@
 
 <div class="tabs">
     <button class="tab-button" id="defaultTab" onclick="changeTab(event, 'main')">Main</button>
+    <button class="tab-button" onclick="changeTab(event, 'prestige')">Prestige</button>
     <button class="tab-button" onclick="changeTab(event, 'settings')">Settings</button>
 </div>
 
 <p id="money">$0</p>
 
 <div class="tab" id="main">
-    <button id="clickButton" onclick="handleClick()">gain money!</button>
+    <button id="clickButton" onclick="handleClick()">Mine Block</button>
 
-    <button id="upgradeClickButton" onclick="handleClickUpgrade()">increase $/click by 1<br>$10</button>
+    <button id="upgradeClickButton" onclick="handleClickUpgrade()">increase $/Block by 1<br>$10</button>
 
-    <button id="upgradeAutoButton" onclick="handleAutoUpgrade()">increase $/second by 1<br>$10</button>
+    <button id="upgradeAutoButton" onclick="handleAutoUpgrade()">increase blocks/second by 1<br>$10</button>
+
+    <button id="prestigeButton" onclick="handlePrestige()">prestige</button>
+</div>
+
+<div class="tab" id="prestige">
+    <button id="autoBlocksPerSecondButton" onclick="handleAutoBlocksPerSecond()">Mine Block</button>
+
+    <button id="autoBlockValueButton" onclick="handleAutoBlockValue()">increase $/Block by 1<br>$10</button>
 </div>
 
 <div class="tab" id="settings">
-    <button id="resetButton" onclick="reset()">reset game</button>
+    <button id="resetButton" onclick="resetAll()">reset game</button>
 </div>
 
 </body>

@@ -1,11 +1,16 @@
 let money = 0;
-let moneyPerClick = 1;
-let moneyPerSecond = 0;
+let moneyPerBlock = 1;
+let blocksPerSecond = 1;
 let tickInterval = 100;
+let prestige = 0;
+let prestigePoints = 0;
 
 function update() {
     const moneyDisplay = document.getElementById("money");
-    moneyDisplay.textContent = `$${money.toFixed(2)}\n$/Second ${moneyPerSecond}`;
+    moneyDisplay.textContent = `$${money.toFixed(2)}\r\nBlocks/Second ${blocksPerSecond}\r\n$/Block ${moneyPerBlock * getMoneyMulti()}\r\n$/Second ${blocksPerSecond * (moneyPerBlock * getMoneyMulti())}\r\nPrestige ${prestige}\r\nPrestige Points ${prestigePoints}`;
+
+    const prestigeButton = document.getElementById("prestigeButton");
+    prestigeButton.textContent = `Prestige for ${prestige+2} times money\r\nCost: ${(prestige+1)*100}`;
 
     requestAnimationFrame(update);
 }
@@ -24,33 +29,60 @@ function changeTab(event, tabName) {
     event.currentTarget.className += " active";
 }
 
+function handleAutoBlocksPerSecond() {
+}
+
+function handleAutoBlockValue() {
+
+}
+
+function handlePrestige() {
+    if (money >= (prestige+1)*100) {
+        prestige++;
+        resetBasic();
+    }
+}
+
+function increaseMoney(amount) {
+    money += amount * getMoneyMulti();
+}
+
+function getMoneyMulti() {
+    return prestige+1;
+}
+
 function handleClick() {
-    money += moneyPerClick;
+    increaseMoney(moneyPerBlock);
 }
 
 function handleClickUpgrade() {
     if (money >= 10) {
         money -= 10;
-        moneyPerClick += 1;
+        moneyPerBlock += 1;
     }
 }
 
 function handleAutoUpgrade() {
     if (money >= 10) {
         money -= 10;
-        moneyPerSecond += 1;
+        blocksPerSecond += 1;
     }
 }
 
-function reset() {
+function resetAll() {
+    resetBasic();
+    prestige = 0;
+}
+
+function resetBasic() {
     money = 0;
-    moneyPerClick = 1;
-    moneyPerSecond = 0;
+    moneyPerBlock = 1;
+    blocksPerSecond = 1;
 }
 
 function backgroundLoop() {
     setInterval(function () {
-        money += moneyPerSecond / (1000 / tickInterval);
+        increaseMoney(moneyPerBlock * (blocksPerSecond / (1000 / tickInterval)));
     }, tickInterval);
 }
 
@@ -60,11 +92,15 @@ function load() {
     }
 
     if (localStorage.getItem('moneyPerSecond')) {
-        moneyPerSecond = parseInt(localStorage.getItem('moneyPerSecond'));
+        blocksPerSecond = parseInt(localStorage.getItem('moneyPerSecond'));
     }
 
     if (localStorage.getItem('moneyPerClick')) {
-        moneyPerClick = parseInt(localStorage.getItem('moneyPerClick'));
+        moneyPerBlock = parseInt(localStorage.getItem('moneyPerClick'));
+    }
+
+    if (localStorage.getItem('prestige')) {
+        prestige = parseInt(localStorage.getItem('prestige'));
     }
 
     calculateOfflineGain();
@@ -72,18 +108,20 @@ function load() {
 
 function save() {
     localStorage.setItem('money', money);
-    localStorage.setItem('moneyPerSecond', moneyPerSecond);
-    localStorage.setItem('moneyPerClick', moneyPerClick);
+    localStorage.setItem('blocksPerSecond', blocksPerSecond);
+    localStorage.setItem('moneyPerBlock', moneyPerBlock);
+    localStorage.setItem('prestige', prestige.toString());
 
-    localStorage.setItem('last_save', Date.now());
+    localStorage.setItem('last_save', Date.now().toString());
 }
 
 function calculateOfflineGain() {
     if (localStorage.getItem('last_save')) {
         let last_save = localStorage.getItem('last_save');
         let time_elapsed = Date.now() - last_save;
-        let gains = (moneyPerSecond / 1000) * time_elapsed;
-        money += gains;
+        let blocksPerMS = (blocksPerSecond / 1000) * time_elapsed;
+        let gains = blocksPerMS * moneyPerBlock;
+        increaseMoney(gains);
         alert("You have made $" + gains + " offline");
     }
 }

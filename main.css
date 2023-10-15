@@ -5,11 +5,13 @@ body {
 
 p {
     color: orange;
+    white-space: pre;
 }
 
 button {
     background-color: beige;
     border: orange;
+    white-space: pre;
 }
 
 .tab {
