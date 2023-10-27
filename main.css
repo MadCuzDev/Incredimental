@@ -1,19 +1,83 @@
+/* Colors https://coolors.co/palette/cad2c5-84a98c-52796f-354f52-2f3e46 */
+
 body {
-    background: #2e2e2e;
+    background: #2F3E46;
     text-align: center;
+    color: #FFFFFF;
+    font-size: 16px;
 }
 
 p {
-    color: orange;
     white-space: pre;
 }
 
 button {
-    background-color: beige;
-    border: orange;
+    background-color: #354F52;
+    color: #FFFFFF;
     white-space: pre;
+    min-width: 6%;
+    min-height: 20px;
+    border: solid 1px #52796F;
+}
+
+.shopButton:active {
+    background-color: #52796F;
+}
+
+.active {
+    background-color: #52796F;
 }
 
 .tab {
     display: none;
+}
+
+.tabStyle {
+    border: 1px solid #354F52;
+    padding: .2%;
+    min-height: 100px;
+    width: 30%;
+    margin: auto auto 1%;
+}
+
+.shopButton {
+    min-width: 32.5%;
+    min-height: 40px;
+}
+
+#clickButton {
+    background: #52796F;
+    border: solid 1px #354F52;
+}
+
+.center-column {
+    float: left;
+    width: 60%;
+    height: 99vh;
+}
+
+.side-column {
+    float: left;
+    width: 20%;
+}
+
+#money {
+    margin-top: 0;
+    padding: 3%;
+}
+
+#enchantmentsDisplay {
+    margin-top: 0;
+    padding: 3%;
+}
+
+.stats {
+    text-align: center;
+    width: 50%;
+    border: solid 1px #354F52;
+    margin: 2% auto auto;
+}
+
+.statsText {
+    margin-bottom: 0;
 }

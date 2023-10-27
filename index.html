@@ -9,35 +9,73 @@
 </head>
 
 <body>
-<h1>Incredimental</h1>
-
-<div class="tabs">
-    <button class="tab-button" id="defaultTab" onclick="changeTab(event, 'main')">Main</button>
-    <button class="tab-button" onclick="changeTab(event, 'prestige')">Prestige</button>
-    <button class="tab-button" onclick="changeTab(event, 'settings')">Settings</button>
+<div class="side-column">
+    <div class="stats">
+        <h3 class="statsText">STATS</h3>
+        <p id="money">$0</p>
+    </div>
 </div>
 
-<p id="money">$0</p>
+<div class="center-column">
+    <h1>Incredimental</h1>
 
-<div class="tab" id="main">
+    <!--Navigation "Tabs"-->
+    <div class="tabs">
+        <button class="tab-button" id="defaultTab" onclick="changeTab(event, 'main')">Main</button>
+        <button class="tab-button" onclick="changeTab(event, 'prestige')">Prestige</button>
+        <button class="tab-button" onclick="changeTab(event, 'enchantments')">Enchantments</button>
+        <button class="tab-button" onclick="changeTab(event, 'settings')">Settings</button>
+    </div>
+    <br>
+
     <button id="clickButton" onclick="handleClick()">Mine Block</button>
+    <br><br>
 
-    <button id="upgradeClickButton" onclick="handleClickUpgrade()">increase $/Block by 1<br>$10</button>
+    <!--Main Layout-->
+    <div class="tab tabStyle" id="main">
+        <button class="shopButton" id="upgradeClickButton" onclick="handleClickUpgrade()">increase $/Block by 1<br>$10</button>
+        <button class="shopButton" id="upgradeAutoButton" onclick="handleAutoUpgrade()">increase blocks/sec by 1<br>$10</button>
+        <button class="shopButton" id="prestigeButton" onclick="handlePrestige()">prestige</button>
+    </div>
 
-    <button id="upgradeAutoButton" onclick="handleAutoUpgrade()">increase blocks/second by 1<br>$10</button>
+    <!--Enchantments Layout-->
+    <div class="tab" id="enchantments">
+        <div class="tabStyle">
+            <button class="shopButton" id="fortuneButton" onclick="handleFortuneUpgrade()">Fortune<br>2% increased $/block<br>20 Tokens</button>
+            <button class="shopButton" id="tokenFinderButton" onclick="handleTokenFinderUpgrade()">Token Finder<br>1% increased tokens/block<br>50 Tokens</button>
+        </div>
 
-    <button id="prestigeButton" onclick="handlePrestige()">prestige</button>
+        <div class="tabStyle">
+            <div class="stats">
+                <h3 class="statsText">Enchantments</h3>
+                <p id="enchantmentsDisplay">$0</p>
+            </div>
+        </div>
+    </div>
+
+    <!--Prestige Layout-->
+    <div class="tab" id="prestige">
+        <div class="tabStyle">
+        <button class="shopButton" id="autoBlocksPerSecondButton" onclick="handleAutoBlocksPerSecond()">Increase block/s by .1 per second<br>1 Prestige Point</button>
+            <button class="shopButton" id="autoBlockValueButton" onclick="handleAutoBlockValue()">Increase $/block by .1 per second<br>1 Prestige Point</button>
+        </div>
+
+        <div class="tabStyle">
+            <div class="stats">
+                <h3 class="statsText">Prestige Upgrades</h3>
+                <p id="prestigeDisplay">$0</p>
+            </div>
+        </div>
+    </div>
+
+    <!--Settings Layout-->
+    <div class="tab tabStyle" id="settings">
+        <button class="shopButton" id="resetButton" onclick="resetAll()">reset game</button>
+    </div>
 </div>
 
-<div class="tab" id="prestige">
-    <button id="autoBlocksPerSecondButton" onclick="handleAutoBlocksPerSecond()">Increase block/s by .1 per second<br>1 Prestige Point</button>
+<div class="side-column">
 
-    <button id="autoBlockValueButton" onclick="handleAutoBlockValue()">Increase $/block by .1 per second<br>1 Prestige Point</button>
 </div>
-
-<div class="tab" id="settings">
-    <button id="resetButton" onclick="resetAll()">reset game</button>
-</div>
-
 </body>
 </html>
