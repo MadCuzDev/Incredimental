@@ -24,6 +24,7 @@
         <button class="tab-button" id="defaultTab" onclick="changeTab(event, 'main')">Main</button>
         <button class="tab-button" onclick="changeTab(event, 'prestige')">Prestige</button>
         <button class="tab-button" onclick="changeTab(event, 'enchantments')">Enchantments</button>
+        <button class="tab-button" onclick="changeTab(event, 'mastery')">Mastery</button>
         <button class="tab-button" onclick="changeTab(event, 'settings')">Settings</button>
     </div>
     <br>
@@ -36,6 +37,7 @@
         <button class="shopButton" id="upgradeClickButton" onclick="handleClickUpgrade()">increase $/Block by 1<br>$10</button>
         <button class="shopButton" id="upgradeAutoButton" onclick="handleAutoUpgrade()">increase blocks/sec by 1<br>$10</button>
         <button class="shopButton" id="prestigeButton" onclick="handlePrestige()">prestige</button>
+        <button class="shopButton" id="masteryButton" onclick="handleMastery()">mastery</button>
     </div>
 
     <!--Enchantments Layout-->
@@ -56,7 +58,7 @@
     <!--Prestige Layout-->
     <div class="tab" id="prestige">
         <div class="tabStyle">
-        <button class="shopButton" id="autoBlocksPerSecondButton" onclick="handleAutoBlocksPerSecond()">Increase block/s by .1 per second<br>1 Prestige Point</button>
+            <button class="shopButton" id="autoBlocksPerSecondButton" onclick="handleAutoBlocksPerSecond()">Increase block/s by .1 per second<br>1 Prestige Point</button>
             <button class="shopButton" id="autoBlockValueButton" onclick="handleAutoBlockValue()">Increase $/block by .1 per second<br>1 Prestige Point</button>
         </div>
 
@@ -64,6 +66,20 @@
             <div class="stats">
                 <h3 class="statsText">Prestige Upgrades</h3>
                 <p id="prestigeDisplay">$0</p>
+            </div>
+        </div>
+    </div>
+
+    <!--Mastery Layout-->
+    <div class="tab" id="mastery">
+        <div class="tabStyle">
+            <button class="shopButton" id="notimplemented" onclick="notimplemented()">notimplemented</button>
+        </div>
+
+        <div class="tabStyle">
+            <div class="stats">
+                <h3 class="statsText">Mastery Upgrades</h3>
+                <p id="masteryDisplay">$0</p>
             </div>
         </div>
     </div>

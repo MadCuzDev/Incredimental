@@ -5,6 +5,8 @@ let blocksPerSecond = 1;
 let tickInterval = 100;
 let prestige = 0;
 let prestigePoints = 0;
+let mastery = 0;
+let masteryPoints = 0;
 let autoBlocksPerSecond = 0;
 let autoBlockValuePerSecond = 0;
 let fortune = 0;
@@ -21,6 +23,8 @@ function update() {
     moneyDisplayText+=`\r\n$/Second ${(blocksPerSecond * (moneyPerBlock * getMoneyMulti())).toFixed(0)}`;
     moneyDisplayText+=`\r\nPrestige ${prestige}`;
     moneyDisplayText+=`\r\nPrestige Points ${prestigePoints}`;
+    moneyDisplayText+=`\r\nMastery ${mastery}`;
+    moneyDisplayText+=`\r\nMastery Points ${masteryPoints}`;
 
     moneyDisplay.textContent = moneyDisplayText;
 
@@ -38,9 +42,12 @@ function update() {
 
     prestigeDisplay.textContent = prestigeDisplayText;
 
-    // Update prestige button
+    // Update prestige & mastery button
     const prestigeButton = document.getElementById("prestigeButton");
-    prestigeButton.textContent = `Prestige for ${prestige+2}x money\r\nCost: ${(prestige+1)*100}`;
+    prestigeButton.textContent = `Prestige for ${prestige+2}x money\r\nCost: ${getPrestigeCost(prestige)}`;
+
+    const masteryButton = document.getElementById("masteryButton");
+    masteryButton.textContent = `Mastery for ${mastery+2}x tokens\r\nCost: ${(mastery+1)*100} Prestige`;
 
     requestAnimationFrame(update);
 }
@@ -75,10 +82,22 @@ function handleAutoBlockValue() {
 }
 
 function handlePrestige() {
-    if (money >= (prestige+1)*100) {
+    if (money >= getPrestigeCost(prestige)) {
         prestige++;
         prestigePoints++;
-        resetBasic();
+        prestigeReset();
+    }
+}
+
+function getPrestigeCost(prestige) {
+    return 100 + Math.pow(prestige, 4);
+}
+
+function handleMastery() {
+    if (prestige >= 100*(mastery+1)) {
+        mastery++;
+        masteryPoints++;
+        masteryReset();
     }
 }
 
@@ -109,7 +128,7 @@ function getMoneyMulti() {
 }
 
 function getTokenMulti() {
-    return 1 + (tokenFinder * 0.01);
+    return (1 + (tokenFinder * 0.01)) * (mastery+1);
 }
 
 function handleClick() {
@@ -131,15 +150,31 @@ function handleAutoUpgrade() {
 }
 
 function resetAll() {
-    resetBasic();
-    prestige = 0;
-    prestigePoints = 0;
+    masteryReset();
+    resetEnchantments();
+    mastery = 0;
+    masteryPoints = 0;
+    localStorage.clear();
 }
 
-function resetBasic() {
+function masteryReset() {
+    prestigeReset();
+    prestige = 0;
+    prestigePoints = 0;
+    autoBlocksPerSecond = 0;
+    autoBlockValuePerSecond = 0;
+}
+
+function prestigeReset() {
     money = 0;
     moneyPerBlock = 1;
     blocksPerSecond = 1;
+    tokens = 0;
+}
+
+function resetEnchantments() {
+    fortune = 0;
+    tokenFinder = 0;
 }
 
 function backgroundLoop() {
@@ -196,6 +231,14 @@ function load() {
         tokenFinder = parseInt(localStorage.getItem('tokenFinder'));
     }
 
+    if (localStorage.getItem('mastery')) {
+        mastery = parseInt(localStorage.getItem('mastery'));
+    }
+
+    if (localStorage.getItem('masteryPoints')) {
+        masteryPoints = parseInt(localStorage.getItem('masteryPoints'));
+    }
+
     calculateOfflineGain();
 }
 
@@ -210,6 +253,8 @@ function save() {
     localStorage.setItem('autoBlockValuePerSecond', autoBlockValuePerSecond);
     localStorage.setItem('fortune', fortune);
     localStorage.setItem('tokenFinder', tokenFinder);
+    localStorage.setItem('mastery', mastery);
+    localStorage.setItem('masteryPoints', masteryPoints);
 
     localStorage.setItem('last_save', Date.now());
 }
@@ -219,12 +264,14 @@ function calculateOfflineGain() {
         let last_save = localStorage.getItem('last_save');
         let time_elapsed = Date.now() - last_save;
         let currentMoney = money;
+        let currentTokens = tokens;
         for (let i = time_elapsed; i > 0; i-=100) {
             calcPerTick();
         }
 
         let gain = money - currentMoney;
-        alert("You have made $" + gain + " offline");
+        let tokenGain = tokens - currentTokens;
+        alert("You have made $" + gain.toFixed(2) + " and " + tokenGain.toFixed(2) + " tokens offline");
     }
 }
 
