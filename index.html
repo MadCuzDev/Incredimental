@@ -12,7 +12,7 @@
 <div class="side-column">
     <div class="stats">
         <h3 class="statsText">STATS</h3>
-        <p id="money">$0</p>
+        <p id="money">error loading</p>
     </div>
 </div>
 
@@ -45,12 +45,14 @@
         <div class="tabStyle">
             <button class="shopButton" id="fortuneButton" onclick="handleFortuneUpgrade()">Fortune<br>2% increased $/block<br>20 Tokens</button>
             <button class="shopButton" id="tokenFinderButton" onclick="handleTokenFinderUpgrade()">Token Finder<br>1% increased tokens/block<br>50 Tokens</button>
+            <button class="shopButton" id="explosiveButton" onclick="handleExplosiveUpgrade()">Explosive<br>1% to destroy 5 blocks<br>50,000 Tokens</button>
+            <button class="shopButton" id="cubicButton" onclick="handleCubicUpgrade()">Cubic<br>0.1% to destroy 25 blocks<br>100,000 Tokens</button>
         </div>
 
         <div class="tabStyle">
-            <div class="stats">
+            <div class="tabStats">
                 <h3 class="statsText">Enchantments</h3>
-                <p id="enchantmentsDisplay">$0</p>
+                <p id="enchantmentsDisplay">error loading</p>
             </div>
         </div>
     </div>
@@ -58,14 +60,15 @@
     <!--Prestige Layout-->
     <div class="tab" id="prestige">
         <div class="tabStyle">
-            <button class="shopButton" id="autoBlocksPerSecondButton" onclick="handleAutoBlocksPerSecond()">Increase block/s by .1 per second<br>1 Prestige Point</button>
-            <button class="shopButton" id="autoBlockValueButton" onclick="handleAutoBlockValue()">Increase $/block by .1 per second<br>1 Prestige Point</button>
+            <button class="shopButton" id="autoBlocksPerSecondButton" onclick="handleAutoBlocksPerSecond()">Increase block/sec by .1/sec<br>1 Prestige Point</button>
+            <button class="shopButton" id="autoBlockValueButton" onclick="handleAutoBlockValue()">Increase $/block by .1/sec<br>1 Prestige Point</button>
+            <button class="shopButton" id="maxPrestigeUnlockButton" onclick="maxPrestigeButtonUnlock()">Unlock max prestige button<br>10 Prestige Points</button>
         </div>
 
         <div class="tabStyle">
-            <div class="stats">
+            <div class="tabStats">
                 <h3 class="statsText">Prestige Upgrades</h3>
-                <p id="prestigeDisplay">$0</p>
+                <p id="prestigeDisplay">error loading</p>
             </div>
         </div>
     </div>
@@ -77,21 +80,25 @@
         </div>
 
         <div class="tabStyle">
-            <div class="stats">
+            <div class="tabStats">
                 <h3 class="statsText">Mastery Upgrades</h3>
-                <p id="masteryDisplay">$0</p>
+                <p id="masteryDisplay">error loading</p>
             </div>
         </div>
     </div>
 
     <!--Settings Layout-->
     <div class="tab tabStyle" id="settings">
-        <button class="shopButton" id="resetButton" onclick="resetAll()">reset game</button>
+        <button class="shopButton" id="resetButton" onclick="resetButton()">reset game</button>
     </div>
 </div>
 
 <div class="side-column">
-
+    <div class="tabStats">
+        <h3 class="statsText">CONFIGURATION</h3>
+        <br>
+        <button class="columnButton" id="maxPrestigeButton" onclick="maxPrestige=!maxPrestige">error loading</button>
+    </div>
 </div>
 </body>
 </html>
