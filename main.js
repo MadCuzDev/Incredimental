@@ -10,11 +10,13 @@ let masteryPoints = 0;
 let autoBlocksPerSecond = 0;
 let autoBlockValuePerSecond = 0;
 let fortune = 0;
+let fortuneMulti = 0.02;
 let tokenFinder = 0;
 let explosive = 0;
 let cubic = 0;
 let maxPrestige = false;
 let maxPrestigeUnlocked = false;
+let keepMaxPrestigeButton = false;
 
 let currentTick = 1;
 
@@ -31,35 +33,44 @@ function update() {
     // Update money display
     const moneyDisplay = document.getElementById("money");
     let moneyDisplayText = `$${formatNumber(money)}`;
-    moneyDisplayText+=`\r\n$/Second ${formatNumber(displayMoneyPerSec)}\r\n`;
-    moneyDisplayText+=`\r\nTokens ${formatNumber(tokens, 0)}`;
-    moneyDisplayText+=`\r\nTokens/Second ${formatNumber(displayTokensPerSec, 0)}\r\n`;
-    moneyDisplayText+=`\r\nBlocks/Second ${formatNumber(blocksPerSecond, 1)}`;
-    moneyDisplayText+=`\r\n$/Block ${formatNumber(moneyPerBlock * getMoneyMulti())}\r\n`;
-    moneyDisplayText+=`\r\nPrestige ${formatNumber(prestige, 0)}`;
-    moneyDisplayText+=`\r\nPrestige Points ${prestigePoints}\r\n`;
-    moneyDisplayText+=`\r\nMastery ${mastery}`;
-    moneyDisplayText+=`\r\nMastery Points ${masteryPoints}`;
-
+    moneyDisplayText +=`\r\n$/Second ${formatNumber(displayMoneyPerSec)}\r\n`;
+    moneyDisplayText +=`\r\nTokens ${formatNumber(tokens, 0)}`;
+    moneyDisplayText +=`\r\nTokens/Second ${formatNumber(displayTokensPerSec, 0)}\r\n`;
+    moneyDisplayText +=`\r\nBlocks/Second ${formatNumber(blocksPerSecond, 1)}`;
+    moneyDisplayText +=`\r\n$/Block ${formatNumber(moneyPerBlock * getMoneyMulti())}\r\n`;
+    moneyDisplayText +=`\r\nPrestige ${formatNumber(prestige, 0)}`;
+    moneyDisplayText +=`\r\nPrestige Points ${prestigePoints}\r\n`;
+    moneyDisplayText +=`\r\nMastery ${mastery}`;
+    moneyDisplayText +=`\r\nMastery Points ${masteryPoints}`;
     moneyDisplay.textContent = moneyDisplayText;
 
     // Update enchantment display
     const enchantmentDisplay = document.getElementById("enchantmentsDisplay");
-    let enchantmentsDisplayText = `Fortune: ${fortune}`;
-    enchantmentsDisplayText+=`\r\nToken Finder: ${tokenFinder}`;
-    enchantmentsDisplayText+=`\r\nExplosive: ${explosive}`;
-    enchantmentsDisplayText+=`\r\nCubic: ${cubic}`;
-
-
-    enchantmentDisplay.textContent = enchantmentsDisplayText;
+    let displayText = `Fortune: ${fortune}`;
+    displayText +=`\r\nToken Finder: ${tokenFinder}`;
+    displayText +=`\r\nExplosive: ${explosive}`;
+    displayText +=`\r\nCubic: ${cubic}`;
+    enchantmentDisplay.textContent = displayText;
 
     // Update prestige display
     const prestigeDisplay = document.getElementById("prestigeDisplay");
-    let prestigeDisplayText = `auto blocks/sec: ${autoBlocksPerSecond.toFixed(1)}`;
-    prestigeDisplayText+=`\r\n auto block value/sec: ${autoBlockValuePerSecond.toFixed(1)}`
-    prestigeDisplayText+=`\r\n max prestige button: ${maxPrestigeUnlocked ? "Unlocked" : "Locked"}`
+    displayText = `auto blocks/sec: ${autoBlocksPerSecond.toFixed(1)}`;
+    displayText +=`\r\nauto block value/sec: ${autoBlockValuePerSecond.toFixed(1)}`
+    displayText +=`\r\nmax prestige button: ${maxPrestigeUnlocked ? "Unlocked" : "Locked"}`
+    prestigeDisplay.textContent = displayText;
 
-    prestigeDisplay.textContent = prestigeDisplayText;
+    // Update mastery display
+    const masteryDisplay = document.getElementById("masteryDisplay");
+    displayText = `double fortune: ${fortuneMulti >= 0.04 ? "Unlocked" : "Locked"}`;
+    displayText +=`\r\nkeep max prestige button: ${keepMaxPrestigeButton ? "Unlocked" : "Locked"}`;
+    masteryDisplay.textContent = displayText;
+
+    // Update fortune button
+    const fortuneButton = document.getElementById("fortuneButton");
+    displayText = `Fortune`;
+    displayText +=`\r\n${(fortuneMulti*100).toFixed(0)}% increased $/block`;
+    displayText +=`\r\n20 Tokens`;
+    fortuneButton.textContent = displayText;
 
     // Update prestige & mastery button
     const prestigeButton = document.getElementById("prestigeButton");
@@ -176,6 +187,13 @@ function handleFortuneUpgrade() {
     }
 }
 
+function doubleFortuneButton() {
+    if (masteryPoints >= 1 && fortuneMulti < 0.04) {
+        masteryPoints--;
+        fortuneMulti = 0.04;
+    }
+}
+
 function handleTokenFinderUpgrade() {
     if (tokens >= 50) {
         tokens-=50;
@@ -206,7 +224,7 @@ function increaseTokens(amount) {
 }
 
 function getMoneyMulti() {
-    return (prestige+1) * (1+(fortune*0.05));
+    return (prestige+1) * (1+(fortune*fortuneMulti));
 }
 
 function getTokenMulti() {
@@ -231,6 +249,13 @@ function handleAutoUpgrade() {
     }
 }
 
+function keepMaxPrestigeUpgrade() {
+    if (!keepMaxPrestigeButton && masteryPoints >= 1) {
+        keepMaxPrestigeButton = true;
+        masteryPoints--;
+    }
+}
+
 function resetButton() {
     doNotSave = true;
     localStorage.clear();
@@ -249,6 +274,10 @@ function masteryReset() {
     prestigeReset();
     prestige = 0;
     prestigePoints = 0;
+    if (!keepMaxPrestigeButton) {
+        maxPrestigeUnlocked = false;
+        document.getElementById("maxPrestigeButton").style.display = "none";
+    }
     autoBlocksPerSecond = 0;
     autoBlockValuePerSecond = 0;
 }
@@ -329,6 +358,10 @@ function load() {
         prestigePoints = parseInt(localStorage.getItem('prestigePoints'));
     }
 
+    if (localStorage.getItem('fortuneMulti')) {
+        fortuneMulti = parseFloat(localStorage.getItem('fortuneMulti'));
+    }
+
     if (localStorage.getItem('autoBlocksPerSecond')) {
         autoBlocksPerSecond = parseFloat(localStorage.getItem('autoBlocksPerSecond'));
     }
@@ -369,6 +402,12 @@ function load() {
         maxPrestigeUnlocked = JSON.parse(localStorage.getItem('maxPrestigeUnlocked'));
     }
 
+    if (localStorage.getItem('keepMaxPrestigeButton')) {
+        keepMaxPrestigeButton = JSON.parse(localStorage.getItem('keepMaxPrestigeButton'));
+    }
+
+
+
     if (maxPrestigeUnlocked) document.getElementById("maxPrestigeButton").style.display = "inline";
 
     calculateOfflineGain();
@@ -393,6 +432,8 @@ function save() {
     localStorage.setItem('cubic', cubic);
     localStorage.setItem('maxPrestige', maxPrestige);
     localStorage.setItem('maxPrestigeUnlocked', maxPrestigeUnlocked);
+    localStorage.setItem('fortuneMulti', fortuneMulti);
+    localStorage.setItem('keepMaxPrestigeButton', keepMaxPrestigeButton);
 
     localStorage.setItem('last_save', Date.now());
 }
