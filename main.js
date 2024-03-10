@@ -28,7 +28,6 @@ let displayTokensPerSec = 0;
 
 let doNotSave = false;
 
-
 function update() {
     // Update money display
     const moneyDisplay = document.getElementById("money");
@@ -413,27 +412,37 @@ function load() {
     calculateOfflineGain();
 }
 
+function getData() {
+    return {
+        'money': money,
+        'tokens': tokens,
+        'blocksPerSecond': blocksPerSecond,
+        'moneyPerBlock': moneyPerBlock,
+        'prestige': prestige,
+        'prestigePoints': prestigePoints,
+        'autoBlocksPerSecond': autoBlocksPerSecond,
+        'autoBlockValuePerSecond': autoBlockValuePerSecond,
+        'fortune': fortune,
+        'tokenFinder': tokenFinder,
+        'mastery': mastery,
+        'masteryPoints': masteryPoints,
+        'explosive': explosive,
+        'cubic': cubic,
+        'maxPrestige': maxPrestige,
+        'maxPrestigeUnlocked': maxPrestigeUnlocked,
+        'fortuneMulti': fortuneMulti,
+        'keepMaxPrestigeButton': keepMaxPrestigeButton
+    };
+}
+
 function save() {
     if (doNotSave) return;
 
-    localStorage.setItem('money', money);
-    localStorage.setItem('tokens', tokens);
-    localStorage.setItem('blocksPerSecond', blocksPerSecond);
-    localStorage.setItem('moneyPerBlock', moneyPerBlock);
-    localStorage.setItem('prestige', prestige);
-    localStorage.setItem('prestigePoints', prestigePoints);
-    localStorage.setItem('autoBlocksPerSecond', autoBlocksPerSecond);
-    localStorage.setItem('autoBlockValuePerSecond', autoBlockValuePerSecond);
-    localStorage.setItem('fortune', fortune);
-    localStorage.setItem('tokenFinder', tokenFinder);
-    localStorage.setItem('mastery', mastery);
-    localStorage.setItem('masteryPoints', masteryPoints);
-    localStorage.setItem('explosive', explosive);
-    localStorage.setItem('cubic', cubic);
-    localStorage.setItem('maxPrestige', maxPrestige);
-    localStorage.setItem('maxPrestigeUnlocked', maxPrestigeUnlocked);
-    localStorage.setItem('fortuneMulti', fortuneMulti);
-    localStorage.setItem('keepMaxPrestigeButton', keepMaxPrestigeButton);
+    const data = getData();
+
+    for (let key in data) {
+        localStorage.setItem(key, data[key]);
+    }
 
     localStorage.setItem('last_save', Date.now());
 }
