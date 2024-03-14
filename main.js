@@ -1,86 +1,86 @@
-let money = 0;
-let tokens = 0;
-let moneyPerBlock = 1;
-let blocksPerSecond = 1;
-let tickInterval = 100;
-let prestige = 0;
-let prestigePoints = 0;
-let mastery = 0;
-let masteryPoints = 0;
-let autoBlocksPerSecond = 0;
-let autoBlockValuePerSecond = 0;
-let fortune = 0;
-let fortuneMulti = 0.02;
-let tokenFinder = 0;
-let explosive = 0;
-let cubic = 0;
-let maxPrestige = false;
-let maxPrestigeUnlocked = false;
-let keepMaxPrestigeButton = false;
+var money = 0;
+var tokens = 0;
+var moneyPerBlock = 1;
+var blocksPerSecond = 1;
+var tickInterval = 100;
+var prestige = 0;
+var prestigePoints = 0;
+var mastery = 0;
+var masteryPoints = 0;
+var autoBlocksPerSecond = 0;
+var autoBlockValuePerSecond = 0;
+var fortune = 0;
+var fortuneMulti = 0.02;
+var tokenFinder = 0;
+var explosive = 0;
+var cubic = 0;
+var maxPrestige = false;
+var maxPrestigeUnlocked = false;
+var keepMaxPrestigeButton = false;
 
-let currentTick = 1;
+var currentTick = 1;
 
-let averageMoneyPerSec = 0;
-let averageTokensPerSec = 0;
+var averageMoneyPerSec = 0;
+var averageTokensPerSec = 0;
 
-let displayMoneyPerSec = 0;
-let displayTokensPerSec = 0;
+var displayMoneyPerSec = 0;
+var displayTokensPerSec = 0;
 
-let doNotSave = false;
+var doNotSave = false;
 
 function update() {
     // Update money display
     const moneyDisplay = document.getElementById("money");
     let moneyDisplayText = `$${formatNumber(money)}`;
-    moneyDisplayText +=`\r\n$/Second ${formatNumber(displayMoneyPerSec)}\r\n`;
-    moneyDisplayText +=`\r\nTokens ${formatNumber(tokens, 0)}`;
-    moneyDisplayText +=`\r\nTokens/Second ${formatNumber(displayTokensPerSec, 0)}\r\n`;
-    moneyDisplayText +=`\r\nBlocks/Second ${formatNumber(blocksPerSecond, 1)}`;
-    moneyDisplayText +=`\r\n$/Block ${formatNumber(moneyPerBlock * getMoneyMulti())}\r\n`;
-    moneyDisplayText +=`\r\nPrestige ${formatNumber(prestige, 0)}`;
-    moneyDisplayText +=`\r\nPrestige Points ${prestigePoints}\r\n`;
-    moneyDisplayText +=`\r\nMastery ${mastery}`;
-    moneyDisplayText +=`\r\nMastery Points ${masteryPoints}`;
+    moneyDisplayText += `\r\n$/Second ${formatNumber(displayMoneyPerSec)}\r\n`;
+    moneyDisplayText += `\r\nTokens ${formatNumber(tokens, 0)}`;
+    moneyDisplayText += `\r\nTokens/Second ${formatNumber(displayTokensPerSec, 0)}\r\n`;
+    moneyDisplayText += `\r\nBlocks/Second ${formatNumber(blocksPerSecond, 1)}`;
+    moneyDisplayText += `\r\n$/Block ${formatNumber(moneyPerBlock * getMoneyMulti())}\r\n`;
+    moneyDisplayText += `\r\nPrestige ${formatNumber(prestige, 0)}`;
+    moneyDisplayText += `\r\nPrestige Points ${prestigePoints}\r\n`;
+    moneyDisplayText += `\r\nMastery ${mastery}`;
+    moneyDisplayText += `\r\nMastery Points ${masteryPoints}`;
     moneyDisplay.textContent = moneyDisplayText;
 
     // Update enchantment display
     const enchantmentDisplay = document.getElementById("enchantmentsDisplay");
     let displayText = `Fortune: ${fortune}`;
-    displayText +=`\r\nToken Finder: ${tokenFinder}`;
-    displayText +=`\r\nExplosive: ${explosive}`;
-    displayText +=`\r\nCubic: ${cubic}`;
+    displayText += `\r\nToken Finder: ${tokenFinder}`;
+    displayText += `\r\nExplosive: ${explosive}`;
+    displayText += `\r\nCubic: ${cubic}`;
     enchantmentDisplay.textContent = displayText;
 
     // Update prestige display
     const prestigeDisplay = document.getElementById("prestigeDisplay");
     displayText = `auto blocks/sec: ${autoBlocksPerSecond.toFixed(1)}`;
-    displayText +=`\r\nauto block value/sec: ${autoBlockValuePerSecond.toFixed(1)}`
-    displayText +=`\r\nmax prestige button: ${maxPrestigeUnlocked ? "Unlocked" : "Locked"}`
+    displayText += `\r\nauto block value/sec: ${autoBlockValuePerSecond.toFixed(1)}`
+    displayText += `\r\nmax prestige button: ${maxPrestigeUnlocked ? "Unlocked" : "Locked"}`
     prestigeDisplay.textContent = displayText;
 
     // Update mastery display
     const masteryDisplay = document.getElementById("masteryDisplay");
     displayText = `double fortune: ${fortuneMulti >= 0.04 ? "Unlocked" : "Locked"}`;
-    displayText +=`\r\nkeep max prestige button: ${keepMaxPrestigeButton ? "Unlocked" : "Locked"}`;
+    displayText += `\r\nkeep max prestige button: ${keepMaxPrestigeButton ? "Unlocked" : "Locked"}`;
     masteryDisplay.textContent = displayText;
 
     // Update fortune button
     const fortuneButton = document.getElementById("fortuneButton");
     displayText = `Fortune`;
-    displayText +=`\r\n${(fortuneMulti*100).toFixed(0)}% increased $/block`;
-    displayText +=`\r\n20 Tokens`;
+    displayText += `\r\n${(fortuneMulti * 100).toFixed(0)}% increased $/block`;
+    displayText += `\r\n20 Tokens`;
     fortuneButton.textContent = displayText;
 
     // Update prestige & mastery button
     const prestigeButton = document.getElementById("prestigeButton");
     if (maxPrestige) {
-        prestigeButton.textContent = `Prestige for ${getMaxPrestige()[1]+1}x money\r\nCost: $${formatNumber(getMaxPrestige()[0])}`;
+        prestigeButton.textContent = `Prestige for ${getMaxPrestige()[1] + 1}x money\r\nCost: $${formatNumber(getMaxPrestige()[0])}`;
     } else {
-        prestigeButton.textContent = `Prestige for ${prestige+2}x money\r\nCost: $${formatNumber(getPrestigeCost(prestige))}`;
+        prestigeButton.textContent = `Prestige for ${prestige + 2}x money\r\nCost: $${formatNumber(getPrestigeCost(prestige))}`;
     }
 
     const masteryButton = document.getElementById("masteryButton");
-    masteryButton.textContent = `Mastery for ${mastery+2}x tokens\r\nCost: ${(mastery+1)*100} Prestige`;
+    masteryButton.textContent = `Mastery for ${mastery + 2}x tokens\r\nCost: ${(mastery + 1) * 100} Prestige`;
 
     const maxPrestigeButton = document.getElementById("maxPrestigeButton");
     maxPrestigeButton.textContent = `Max Prestige: ` + maxPrestige;
@@ -105,7 +105,7 @@ function changeTab(event, tabName) {
 
 function maxPrestigeButtonUnlock() {
     if (!maxPrestigeUnlocked && prestigePoints >= 10) {
-        prestigePoints-=10;
+        prestigePoints -= 10;
         maxPrestigeUnlocked = true;
         document.getElementById("maxPrestigeButton").style.display = "inline";
     }
@@ -121,14 +121,14 @@ function formatNumber(number, decimal = 2) {
 
 function handleAutoBlocksPerSecond() {
     if (prestigePoints >= 1) {
-        autoBlocksPerSecond+=.1;
+        autoBlocksPerSecond += .1;
         prestigePoints--;
     }
 }
 
 function handleAutoBlockValue() {
     if (prestigePoints >= 1) {
-        autoBlockValuePerSecond+=.1;
+        autoBlockValuePerSecond += .1;
         prestigePoints--;
     }
 }
@@ -172,7 +172,7 @@ function getPrestigeCost(prestige) {
 }
 
 function handleMastery() {
-    if (prestige >= 100*(mastery+1)) {
+    if (prestige >= 100 * (mastery + 1)) {
         mastery++;
         masteryPoints++;
         masteryReset();
@@ -181,7 +181,7 @@ function handleMastery() {
 
 function handleFortuneUpgrade() {
     if (tokens >= 20) {
-        tokens-=20;
+        tokens -= 20;
         fortune++;
     }
 }
@@ -195,21 +195,21 @@ function doubleFortuneButton() {
 
 function handleTokenFinderUpgrade() {
     if (tokens >= 50) {
-        tokens-=50;
+        tokens -= 50;
         tokenFinder++;
     }
 }
 
 function handleExplosiveUpgrade() {
     if (tokens >= 50000 && explosive < 100) {
-        tokens-=50000;
+        tokens -= 50000;
         explosive++;
     }
 }
 
 function handleCubicUpgrade() {
     if (tokens >= 100000 && cubic < 1000) {
-        tokens-=100000;
+        tokens -= 100000;
         cubic++;
     }
 }
@@ -223,11 +223,11 @@ function increaseTokens(amount) {
 }
 
 function getMoneyMulti() {
-    return (prestige+1) * (1+(fortune*fortuneMulti));
+    return (prestige + 1) * (1 + (fortune * fortuneMulti));
 }
 
 function getTokenMulti() {
-    return (1 + (tokenFinder * 0.01)) * (mastery+1);
+    return (1 + (tokenFinder * 0.01)) * (mastery + 1);
 }
 
 function handleClick() {
@@ -303,15 +303,15 @@ function calcPerTick() {
     const currentMoney = money;
     const currentTokens = tokens;
 
-    moneyPerBlock+=autoBlockValuePerSecond;
-    blocksPerSecond+=autoBlocksPerSecond;
+    moneyPerBlock += autoBlockValuePerSecond;
+    blocksPerSecond += autoBlocksPerSecond;
 
     const baseBlocksPerTick = (blocksPerSecond / (1000 / tickInterval));
     let calcBlocksPerTick = baseBlocksPerTick;
 
     // Calculate enchantment activation chances and their effect
-    if ((Math.floor(Math.random() * 100) + 1) <= explosive) calcBlocksPerTick+=(baseBlocksPerTick*5);
-    if ((Math.floor(Math.random() * 1000) + 1) <= cubic) calcBlocksPerTick+=(baseBlocksPerTick*25);
+    if ((Math.floor(Math.random() * 100) + 1) <= explosive) calcBlocksPerTick += (baseBlocksPerTick * 5);
+    if ((Math.floor(Math.random() * 1000) + 1) <= cubic) calcBlocksPerTick += (baseBlocksPerTick * 25);
 
     increaseMoney(moneyPerBlock * calcBlocksPerTick);
     increaseTokens(calcBlocksPerTick);
@@ -332,117 +332,49 @@ function calcPerTick() {
     }
 }
 
+const items = [
+    'money', 'tokens', 'blocksPerSecond', 'moneyPerBlock', 'prestige', 'prestigePoints', 'fortuneMulti', 'autoBlocksPerSecond', 'autoBlockValuePerSecond', 'fortune', 'tokenFinder', 'explosive', 'mastery', 'masteryPoints', 'cubic', 'maxPrestige', 'maxPrestigeUnlocked', 'keepMaxPrestigeButton'
+];
+
 function load() {
-    if (localStorage.getItem('money')) {
-        money = parseInt(localStorage.getItem('money'));
-    }
-
-    if (localStorage.getItem('tokens')) {
-        tokens = parseInt(localStorage.getItem('tokens'));
-    }
-
-    if (localStorage.getItem('blocksPerSecond')) {
-        blocksPerSecond = parseInt(localStorage.getItem('blocksPerSecond'));
-    }
-
-    if (localStorage.getItem('moneyPerBlock')) {
-        moneyPerBlock = parseFloat(localStorage.getItem('moneyPerBlock'));
-    }
-
-    if (localStorage.getItem('prestige')) {
-        prestige = parseInt(localStorage.getItem('prestige'));
-    }
-
-    if (localStorage.getItem('prestigePoints')) {
-        prestigePoints = parseInt(localStorage.getItem('prestigePoints'));
-    }
-
-    if (localStorage.getItem('fortuneMulti')) {
-        fortuneMulti = parseFloat(localStorage.getItem('fortuneMulti'));
-    }
-
-    if (localStorage.getItem('autoBlocksPerSecond')) {
-        autoBlocksPerSecond = parseFloat(localStorage.getItem('autoBlocksPerSecond'));
-    }
-
-    if (localStorage.getItem('autoBlockValuePerSecond')) {
-        autoBlockValuePerSecond = parseFloat(localStorage.getItem('autoBlockValuePerSecond'));
-    }
-
-    if (localStorage.getItem('fortune')) {
-        fortune = parseInt(localStorage.getItem('fortune'));
-    }
-
-    if (localStorage.getItem('tokenFinder')) {
-        tokenFinder = parseInt(localStorage.getItem('tokenFinder'));
-    }
-
-    if (localStorage.getItem('explosive')) {
-        explosive = parseInt(localStorage.getItem('explosive'));
-    }
-
-    if (localStorage.getItem('mastery')) {
-        mastery = parseInt(localStorage.getItem('mastery'));
-    }
-
-    if (localStorage.getItem('masteryPoints')) {
-        masteryPoints = parseInt(localStorage.getItem('masteryPoints'));
-    }
-
-    if (localStorage.getItem('cubic')) {
-        cubic = parseInt(localStorage.getItem('cubic'));
-    }
-
-    if (localStorage.getItem('maxPrestige')) {
-        maxPrestige = JSON.parse(localStorage.getItem('maxPrestige'));
-    }
-
-    if (localStorage.getItem('maxPrestigeUnlocked')) {
-        maxPrestigeUnlocked = JSON.parse(localStorage.getItem('maxPrestigeUnlocked'));
-    }
-
-    if (localStorage.getItem('keepMaxPrestigeButton')) {
-        keepMaxPrestigeButton = JSON.parse(localStorage.getItem('keepMaxPrestigeButton'));
-    }
-
-
+    items.forEach(item => {
+        const value = localStorage.getItem(item);
+        if (value !== null) {
+            window[item] = isNaN(value) ? JSON.parse(value) : Number(value);
+        }
+    });
 
     if (maxPrestigeUnlocked) document.getElementById("maxPrestigeButton").style.display = "inline";
 
     calculateOfflineGain();
 }
 
-function getData() {
+function getIntData() {
     return {
         'money': money,
         'tokens': tokens,
         'blocksPerSecond': blocksPerSecond,
-        'moneyPerBlock': moneyPerBlock,
         'prestige': prestige,
         'prestigePoints': prestigePoints,
-        'autoBlocksPerSecond': autoBlocksPerSecond,
-        'autoBlockValuePerSecond': autoBlockValuePerSecond,
         'fortune': fortune,
         'tokenFinder': tokenFinder,
         'mastery': mastery,
         'masteryPoints': masteryPoints,
         'explosive': explosive,
-        'cubic': cubic,
-        'maxPrestige': maxPrestige,
-        'maxPrestigeUnlocked': maxPrestigeUnlocked,
-        'fortuneMulti': fortuneMulti,
-        'keepMaxPrestigeButton': keepMaxPrestigeButton
+        'cubic': cubic
     };
 }
+
+const intData = ['money', 'tokens', 'blocksPerSecond', 'prestige', 'prestigePoints', 'fortune', 'tokenFinder', 'mastery', 'masteryPoints', 'explosive', 'cubic'];
+const floatData = ['moneyPerBlock', 'autoBlocksPerSecond', 'autoBlockValuePerSecond', 'fortuneMulti'];
+const genericData = ['maxPrestige', 'maxPrestigeUnlocked', 'keepMaxPrestigeButton'];
 
 function save() {
     if (doNotSave) return;
 
-    const data = getData();
-
-    for (let key in data) {
-        localStorage.setItem(key, data[key]);
-    }
+    [...intData, ...floatData, ...genericData].forEach(key => {
+        localStorage.setItem(key, window[key]);
+    });
 
     localStorage.setItem('last_save', Date.now());
 }
@@ -453,7 +385,7 @@ function calculateOfflineGain() {
         let time_elapsed = Date.now() - last_save;
         let currentMoney = money;
         let currentTokens = tokens;
-        for (let i = time_elapsed; i > 0; i-=100) {
+        for (let i = time_elapsed; i > 0; i -= 100) {
             calcPerTick();
         }
 
